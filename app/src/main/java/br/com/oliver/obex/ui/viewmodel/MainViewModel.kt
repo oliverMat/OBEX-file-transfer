@@ -1,42 +1,23 @@
 package br.com.oliver.obex.ui.viewmodel
 
-import android.Manifest
 import android.app.Application
 import android.bluetooth.BluetoothDevice
-import android.content.pm.PackageManager
-import android.os.Build
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.viewModelScope
-import br.com.oliver.obex.ui.model.MainUiState
+import br.com.oliver.obex.ui.model.UiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 
 class MainViewModel(app: Application) : AndroidViewModel(app) {
 
     private val bluetooth = Bluetooth()
 
-    private val _uiState = MutableStateFlow(MainUiState())
-    val uiState: StateFlow<MainUiState> = _uiState
-
-
-    fun checkBluetoothPermission(): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            getApplication<Application>().checkSelfPermission(
-                Manifest.permission.BLUETOOTH_CONNECT
-            ) == PackageManager.PERMISSION_GRANTED
-        } else {
-            true
-        }
-    }
+    private val _uiState = MutableStateFlow(UiState())
+    val uiState: StateFlow<UiState> = _uiState
 
     fun onPermissionGranted() {
-        viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(
-                devices = bluetooth.loadBondedDevices(),
-                permissionGranted = true
-            )
-        }
+        _uiState.value = _uiState.value.copy(
+            devices = bluetooth.loadBondedDevices()
+        )
     }
 
     fun selectDevice(device: BluetoothDevice) {

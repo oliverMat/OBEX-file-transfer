@@ -24,13 +24,14 @@ import javax.obex.Operation
 import javax.obex.ResponseCodes
 
 class Bluetooth {
-    private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
 
+    private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
     private lateinit var scope: CoroutineScope
 
+
     @SuppressLint("MissingPermission")
-    fun loadBondedDevices(): List<BluetoothDevice> {
-        return bluetoothAdapter!!.bondedDevices.toList()
+    fun loadBondedDevices(): List<BluetoothDevice>? {
+        return bluetoothAdapter?.bondedDevices?.toList()
     }
 
     @SuppressLint("MissingPermission")
