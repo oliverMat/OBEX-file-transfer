@@ -35,12 +35,12 @@ class Bluetooth {
     }
 
     @SuppressLint("MissingPermission")
-    fun sendFile(selectedDevice: BluetoothDevice?, selectedFileUri: String?) {
+    fun sendFile(bluetoothDevice: BluetoothDevice?, filePath: String?) {
         initScope()
 
         scope.launch(highPriorityDispatcher) {
             try {
-                val socket: BluetoothSocket = selectedDevice!!.createRfcommSocketToServiceRecord(
+                val socket: BluetoothSocket = bluetoothDevice!!.createRfcommSocketToServiceRecord(
                     UUID.fromString(
                     UUID_OPP
                 ))
@@ -56,7 +56,7 @@ class Bluetooth {
                     return@launch
                 }
 
-                val file = File(selectedFileUri!!)
+                val file = File(filePath!!)
 
                 /* Prepara o cabeçalho do arquivo (metadata) */
                 val headers = HeaderSet()
@@ -74,6 +74,7 @@ class Bluetooth {
                 while (fis.read(buffer).also { read = it } != -1) {
                     os.write(buffer, 0, read)
                 }
+
                 fis.close()
                 os.close()
                 op.close()
